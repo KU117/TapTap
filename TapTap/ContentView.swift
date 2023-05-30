@@ -19,13 +19,16 @@ class GameVars: ObservableObject {
     
     // Idle timer
     private var idleTimer: Timer?
-    private let idleTimeInterval: TimeInterval = 1 // Change the interval as needed
+    private let idleTimeInterval: TimeInterval = 1
+    private var idleStartTime: Date?
+    private var idleCoinsPerSecond: Double = 0 // Adjust the value as needed
     
     init() {
         setupIdleTimer()
     }
     
     private func setupIdleTimer() {
+        idleStartTime = Date()
         idleTimer = Timer.scheduledTimer(withTimeInterval: idleTimeInterval, repeats: true) { [weak self] _ in
             self?.addIdleCoins()
         }
@@ -34,13 +37,14 @@ class GameVars: ObservableObject {
     }
     
     private func addIdleCoins() {
-        coins += Int(0.5 * Double(uCU))
-        coins += Int(1 * Double(aCU))
+        guard let idleStartTime = idleStartTime else { return }
+        let idleTime = Date().timeIntervalSince(idleStartTime)
+        let idleCoins = Int(idleTime * idleCoinsPerSecond)
+        coins += idleCoins
     }
-
+    
     func resetIdleTimer() {
-        idleTimer?.invalidate()
-        setupIdleTimer()
+        idleStartTime = Date()
     }
 }
 
@@ -81,7 +85,7 @@ struct ContentView: View {
                     // Tap Tap text
                     
                     if GameV.chtd {
-                        Text("Nie ładnie oszukiwać")
+                        Text("Tap Tap! {DEBUG}")
                             .font(.system(size: 20))
                             .onChange(of: GameV.chtd) { newValue in }
                     } else {Text("Tap Tap!").font(.system(size: 30)).onChange(of: GameV.chtd) { newValue in }}
@@ -145,7 +149,7 @@ struct ContentView: View {
                             .foregroundColor(.blue)
                             .fontWeight(.heavy)
                         
-                        Button("Reset") {
+                        Button("Reset progress") {
                             GameV.coins = 0
                             GameV.oCU = 1
                             GameV.OCUCost = 200
@@ -154,18 +158,24 @@ struct ContentView: View {
                             GameV.aCUCost = 4000
                             GameV.uCUCost = 10000
                             GameV.uCU = 0
-                        } .tint(.blue)
+                        }
+                            .tint(.blue)
+                            .buttonStyle(.bordered)
                             .opacity(devMode ? 1 : 0)
                         
-                        Button("RuinTheFun") {
+                        Button("+10.000") {
                             GameV.coins += 10000
                             GameV.chtd = true
-                        } .tint(.blue)
+                        }
+                            .tint(.blue)
+                            .buttonStyle(.bordered)
                             .opacity(devMode ? 1 : 0)
                         
                     }
                 }
             }
+            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+            .ignoresSafeArea()
             .padding()
             .navigationTitle("Gra")
             .sheet(isPresented: $GameV.showShopView) {
