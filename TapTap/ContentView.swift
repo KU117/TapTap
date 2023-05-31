@@ -15,41 +15,33 @@ class GameVars: ObservableObject {
     @AppStorage("ultraClickUpg") public var uCU: Int = 0
     @AppStorage("ultraCUCost") public var uCUCost: Int = 10000
     // Shop view
-    public var showShopView: Bool = false
+    @Published var showShopView: Bool = false
+    // Achievements view
+    @Published var showAchievementsView: Bool = false
+}
+
+class ViewModel: ObservableObject {
+    @StateObject var GameV = GameVars()
     
-    // Idle timer
-    private var idleTimer: Timer?
-    private let idleTimeInterval: TimeInterval = 1
-    private var idleStartTime: Date?
-    private var idleCoinsPerSecond: Double = 0 // Adjust the value as needed
-    
+
     init() {
-        setupIdleTimer()
+        startTimer()
     }
-    
-    private func setupIdleTimer() {
-        idleStartTime = Date()
-        idleTimer = Timer.scheduledTimer(withTimeInterval: idleTimeInterval, repeats: true) { [weak self] _ in
-            self?.addIdleCoins()
+
+    func startTimer() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            self.GameV.coins += self.GameV.aCU
+            self.GameV.objectWillChange.send()
         }
-        idleTimer?.tolerance = 0.1
-        idleTimer?.fire()
-    }
-    
-    private func addIdleCoins() {
-        guard let idleStartTime = idleStartTime else { return }
-        let idleTime = Date().timeIntervalSince(idleStartTime)
-        let idleCoins = Int(idleTime * idleCoinsPerSecond)
-        coins += idleCoins
-    }
-    
-    func resetIdleTimer() {
-        idleStartTime = Date()
     }
 }
 
 // Main view
 struct ContentView: View {
+    
+    @StateObject private var viewModel = ViewModel()
+    
+    @StateObject private var achs = achievements()
     
     @State var devMode = false
     // Import GameVars vars
@@ -71,9 +63,9 @@ struct ContentView: View {
     // Body
     var body: some View {
         // .../s coins
-        let AutoClickTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-        
-        let UltraClickTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+        let ClickTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+//
+//        let UltraClickTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
         Group {
             
             NavigationView {
@@ -96,23 +88,24 @@ struct ContentView: View {
                     Text("\(formattedCoins)")
                         .font(.system(size: 80))
                         .onChange(of: GameV.coins) { newValue in }
-                        .onReceive(AutoClickTimer) { _ in
-                            // Ta funkcja zostanie wywołana co sekundę
+                        .onReceive(ClickTimer) { _ in
                             GameV.coins += GameV.aCU
-                        }
-                        .onReceive(UltraClickTimer) { _ in
                             GameV.coins += GameV.uCU
                         }
-                        .onAppear {
-                            GameV.resetIdleTimer()
-                        }
-                        .onDisappear {
-                            GameV.resetIdleTimer()
-                        }
-                    
+//                        .onReceive(UltraClickTimer) { _ in
+//                            if GameV.uCU > 0 {
+//                                GameV.coins += GameV.uCU
+//                            }
+//                        }
                     // Main click button
                     
-                    Button("- - Kliknij - -") { GameV.coins += GameV.oCU }
+                    Button("- - Kliknij - -") {
+                        GameV.coins += GameV.oCU
+                        if !achs.aO {
+                            achs.aOP += GameV.oCU
+                            achs.aTP += GameV.oCU
+                        }
+                    }
                         .tint(.pink)
                         .buttonStyle(.borderedProminent)
                     
@@ -121,15 +114,14 @@ struct ContentView: View {
                     // Upgreade shop
                     
                     Button("SKLEP Z ULEPSZENIAMI") {
-                        // Ustaw wartość flagi `showShopView` na true
                         GameV.showShopView = true
                     }
                     .tint(.pink)
                     .buttonStyle(.borderedProminent)
-                    Button("OSIĄGNIĘCIA") {
-
+                    Button("OSIĄGNIĘCIA | BETA") {
+                        GameV.showAchievementsView = true
                     }
-                    .disabled(true)
+                    .disabled(false)
                     .tint(.pink)
                     .buttonStyle(.borderedProminent)
                     VStack {
@@ -158,9 +150,13 @@ struct ContentView: View {
                             GameV.aCUCost = 4000
                             GameV.uCUCost = 10000
                             GameV.uCU = 0
+                            achs.aO = false
+                            achs.aOP = 0
+                            achs.aT = false
+                            achs.aTP = 0
                         }
                             .tint(.blue)
-                            .buttonStyle(.bordered)
+                            
                             .opacity(devMode ? 1 : 0)
                         
                         Button("+10.000") {
@@ -168,9 +164,20 @@ struct ContentView: View {
                             GameV.chtd = true
                         }
                             .tint(.blue)
-                            .buttonStyle(.bordered)
+                            
                             .opacity(devMode ? 1 : 0)
-                        
+                        Button("CompleteAch1") {
+                            achs.aOP = 1000
+                        }
+                            .tint(.blue)
+                            
+                            .opacity(devMode ? 1 : 0)
+                        Button("CompleteAch2") {
+                            achs.aTP = 10000
+                        }
+                            .tint(.blue)
+                            
+                            .opacity(devMode ? 1 : 0)
                     }
                 }
             }
@@ -180,6 +187,10 @@ struct ContentView: View {
             .navigationTitle("Gra")
             .sheet(isPresented: $GameV.showShopView) {
                 ShopView()
+                    .environmentObject(GameV)
+            }
+            .sheet(isPresented: $GameV.showAchievementsView) {
+                AchievementsView()
                     .environmentObject(GameV)
             }
         }

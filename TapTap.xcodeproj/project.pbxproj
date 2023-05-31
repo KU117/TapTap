@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9634F1552A25D5D40045CCD9 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9634F1542A25D5D40045CCD9 /* AchievementsView.swift */; };
+		968DA7442A278A1400091A13 /* AchievementsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968DA7432A278A1400091A13 /* AchievementsAPI.swift */; };
 		96DE139E2A24E8CD004DE389 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DE139D2A24E8CD004DE389 /* ShopView.swift */; };
 		96FE23B42A23CCF200650FAF /* TapTapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FE23B32A23CCF200650FAF /* TapTapApp.swift */; };
 		96FE23B62A23CCF200650FAF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FE23B52A23CCF200650FAF /* ContentView.swift */; };
@@ -35,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9634F1542A25D5D40045CCD9 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
+		968DA7432A278A1400091A13 /* AchievementsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsAPI.swift; sourceTree = "<group>"; };
 		96DE139D2A24E8CD004DE389 /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
 		96FE23B02A23CCF200650FAF /* TapTap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TapTap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96FE23B32A23CCF200650FAF /* TapTapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTapApp.swift; sourceTree = "<group>"; };
@@ -97,12 +101,14 @@
 		96FE23B22A23CCF200650FAF /* TapTap */ = {
 			isa = PBXGroup;
 			children = (
-				96FE23B32A23CCF200650FAF /* TapTapApp.swift */,
 				96FE23B52A23CCF200650FAF /* ContentView.swift */,
+				96FE23B32A23CCF200650FAF /* TapTapApp.swift */,
+				9634F1542A25D5D40045CCD9 /* AchievementsView.swift */,
 				96FE23B72A23CCF300650FAF /* Assets.xcassets */,
 				96FE23BC2A23CCF300650FAF /* TapTap.entitlements */,
 				96FE23B92A23CCF300650FAF /* Preview Content */,
 				96DE139D2A24E8CD004DE389 /* ShopView.swift */,
+				968DA7432A278A1400091A13 /* AchievementsAPI.swift */,
 			);
 			path = TapTap;
 			sourceTree = "<group>";
@@ -262,9 +268,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9634F1552A25D5D40045CCD9 /* AchievementsView.swift in Sources */,
 				96DE139E2A24E8CD004DE389 /* ShopView.swift in Sources */,
 				96FE23B62A23CCF200650FAF /* ContentView.swift in Sources */,
 				96FE23B42A23CCF200650FAF /* TapTapApp.swift in Sources */,
+				968DA7442A278A1400091A13 /* AchievementsAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

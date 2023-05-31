@@ -13,9 +13,10 @@ struct ShopView: View {
         Group {
             VStack {
                 Text("Sklep")
+                    .font(.system(size:50))
                     .foregroundColor(.pink)
-                    .font(.system(size: 40))
-                
+                    .fontWeight(.heavy)
+                Divider()
                 Button("Kliknięcie +\(ContentView.oCU) - \(ContentView.OCUCost) ") {
                     if ContentView.coins >= ContentView.OCUCost {
                         ContentView.coins -= ContentView.OCUCost
@@ -53,7 +54,7 @@ struct ShopView: View {
                 }
                 .tint(.pink)
                 .buttonStyle(.borderedProminent)
-                Button("UltraClick \(ContentView.uCU)/0.5s - \(ContentView.uCUCost)") {
+                Button("UltraClick \(ContentView.uCU)/s - \(ContentView.uCUCost)") {
                     if ContentView.coins >= ContentView.uCUCost {
                         ContentView.coins -= ContentView.uCUCost
                         ContentView.uCUCost += 10000
