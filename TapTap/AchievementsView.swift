@@ -3,13 +3,15 @@ import SwiftUI
 struct AchievementsView: View {
     @StateObject var achs = achievements()
     
+    public var achSize: CGFloat = 20
+    
     init() {
-        if achs.aOP == 1000 {
+        if achs.aOP >= 1000 {
             achs.aO = true
         } else {
             achs.aO = false
         }
-        if achs.aTP == 10000 {
+        if achs.aTP >= 10000 {
             achs.aT = true
         } else {
             achs.aT = false
@@ -27,23 +29,23 @@ struct AchievementsView: View {
                     if achs.aO {
                         Text("Kliknij 1000 razy (\(achs.aOP)/1000)")
                             .foregroundColor(.green)
-                            .font(.system(size: 25, design: .rounded))
+                            .font(.system(size: achSize, design: .rounded))
                             .padding()
                     } else {
                         Text("Kliknij 1000 razy (\(achs.aOP)/1000)")
                             .foregroundColor(.red)
-                            .font(.system(size: 25, design: .rounded))
+                            .font(.system(size: achSize, design: .rounded))
                             .padding()
                     }
                     if achs.aT {
                         Text("Kliknij 10000 razy (\(achs.aTP)/10000)")
                             .foregroundColor(.green)
-                            .font(.system(size: 25, design: .rounded))
+                            .font(.system(size: achSize, design: .rounded))
                             .padding()
                     } else {
                         Text("Kliknij 10000 razy (\(achs.aTP)/10000)")
                             .foregroundColor(.red)
-                            .font(.system(size: 25, design: .rounded))
+                            .font(.system(size: achSize, design: .rounded))
                             .padding()
                     }
 

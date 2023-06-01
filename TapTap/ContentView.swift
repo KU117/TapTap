@@ -5,6 +5,10 @@ class GameVars: ObservableObject {
     @AppStorage("Cheated") public var chtd: Bool = false
     // Main points
     @AppStorage("coinz") public var coins: Int = 0
+    // Level
+    @AppStorage("LvlClicks") public var lvlClcks: Int = 0
+    @AppStorage("levelMaxXP") var lvlXPMax: Double = 40
+    @AppStorage("progressLevel") public var pLvl: Int = 1
     // Click Upgrade
     @AppStorage("oneClickUpg") public var oCU: Int = 1
     @AppStorage("oneCUCost") public var OCUCost: Int = 200
@@ -60,8 +64,10 @@ struct ContentView: View {
             return "\(GameV.coins)"
         }
     }
+    
     // Body
     var body: some View {
+        
         // .../s coins
         let ClickTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 //
@@ -74,6 +80,19 @@ struct ContentView: View {
                     
                     Spacer()
                     
+                    Gauge.init(value: Float(GameV.lvlClcks), in: 0...Float(GameV.lvlXPMax)) {
+                        Text("Poziom: \(GameV.pLvl)")
+                    }
+                    .onChange(of: GameV.lvlClcks) { _ in
+                        if Float(GameV.lvlClcks) >= Float(GameV.lvlXPMax) {
+                            GameV.lvlClcks = GameV.oCU
+                            GameV.lvlXPMax = Double(GameV.lvlXPMax) * 1.5
+                            GameV.pLvl += 1
+                        }
+                    }
+                    .tint(.mint)
+                    .foregroundColor(.black)
+
                     // Tap Tap text
                     
                     if GameV.chtd {
@@ -104,28 +123,32 @@ struct ContentView: View {
                         if !achs.aO {
                             achs.aOP += GameV.oCU
                             achs.aTP += GameV.oCU
+                            GameV.lvlClcks += GameV.oCU
+                            print(achs.aO)
                         }
                     }
-                        .tint(.pink)
+                        .tint(.mint)
+                        .foregroundColor(.black)
                         .buttonStyle(.borderedProminent)
                     
                     Divider()
+                    // Test btn
                     
-                    // Upgreade shop
-                    
+                    // Upgrade shop
                     Button("SKLEP Z ULEPSZENIAMI") {
                         GameV.showShopView = true
                     }
-                    .tint(.pink)
+                    .tint(.mint)
+                    .foregroundColor(.black)
                     .buttonStyle(.borderedProminent)
                     Button("OSIĄGNIĘCIA | BETA") {
                         GameV.showAchievementsView = true
                     }
-                    .disabled(false)
-                    .tint(.pink)
+                    .tint(.mint)
+                    .foregroundColor(.black)
                     .buttonStyle(.borderedProminent)
+                    
                     VStack {
-                        
                         Divider()
                         
                         // Debugging
@@ -154,6 +177,9 @@ struct ContentView: View {
                             achs.aOP = 0
                             achs.aT = false
                             achs.aTP = 0
+                            GameV.lvlClcks = 0
+                            GameV.lvlXPMax = 40.0
+                            GameV.pLvl = 1
                         }
                             .tint(.blue)
                             
@@ -176,7 +202,6 @@ struct ContentView: View {
                             achs.aTP = 10000
                         }
                             .tint(.blue)
-                            
                             .opacity(devMode ? 1 : 0)
                     }
                 }
@@ -197,6 +222,8 @@ struct ContentView: View {
     }
 }
 
+
+                
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
